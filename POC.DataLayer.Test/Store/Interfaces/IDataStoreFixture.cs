@@ -1,0 +1,23 @@
+﻿using System.Threading.Tasks;
+
+using Xunit;
+
+using POC.DataLayer.Data.Enums;
+
+namespace POC.DataLayer.Data.Test.Store
+{
+    public interface IDataStoreFixture : IClassFixture<DbContextFixture>
+    {
+        public Task Test1_CreateEntityAsync_Case1_ValidModel(long id, string name, string color, Taste taste);
+        public Task Test1_CreateEntityAsync_Case2_DefaultValues(long id, string name, string color, Taste taste);
+        public Task Test1_CreateEntityAsync_Case3_InvalidModel(long id, string name, string color, Taste taste);
+        public Task Test1_CreateEntityAsync_Case4_InvalidId(long id, string name, string color, Taste taste);
+        public Task Test1_CreateEntityAsync_Case5_NullEntity();
+        public Task Test2_UpdateEntityAsync_Case1_ValidModel(string name, string color, Taste taste);
+        public Task Test2_UpdateEntityAsync_Case2_InvalidModel(string name, string color, Taste taste);
+        public Task Test2_UpdateEntityAsync_Case3_InvalidId(long id);
+        public Task Test2_UpdateEntityAsync_Case4_NullEntity();
+        public Task Test3_DeleteEntityAsync_Case1_ValidId();
+        public Task Test3_DeleteEntityAsync_Case2_InvalidId(long id);
+    }
+}
