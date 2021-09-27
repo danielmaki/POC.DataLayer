@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using POC.DataLayer.Data.DTO;
+//using POC.DataLayer.Data.DTO;
 using POC.DataLayer.Data.Mappings;
-using POC.DataLayer.Data.Models;
-using POC.DataLayer.Data.ORM;
+//using POC.DataLayer.Data.Models;
+using POC.DataLayer.Data;
+//using POC.DataLayer.Data.ORM;
 using POC.DataLayer.Data.Store;
 
 namespace POC.DataLayer.Controllers
@@ -16,10 +17,10 @@ namespace POC.DataLayer.Controllers
     public class FruitController : ControllerBase
     {
         private readonly ILogger<FruitController> logger;
-        private readonly FruitDataStore fruitDataStore;
+        private readonly IDataStore<FruitModel> fruitDataStore;
         private readonly IDataMapping<FruitModel, FruitORM, FruitDTO> dataMapper;
 
-        public FruitController(ILogger<FruitController> logger, FruitDataStore fruitDataStore, IDataMapping<FruitModel, FruitORM, FruitDTO> dataMapper)
+        public FruitController(ILogger<FruitController> logger, IDataStore<FruitModel> fruitDataStore, IDataMapping<FruitModel, FruitORM, FruitDTO> dataMapper)
         {
             this.logger = logger;
 

@@ -6,20 +6,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using POC.DataLayer.Data.Context;
-//using POC.DataLayer.Data.DTO;
 using POC.DataLayer.Data.Mappings;
-//using POC.DataLayer.Data.Models;
-//using POC.DataLayer.Data.ORM;
 
 namespace POC.DataLayer.Data.Store
 {
-    public class FruitDataStore
+    /// <summary>
+    /// A generic class for CRUD operations to/from Entity Framework data store
+    /// </summary>
+    /// <typeparam name="MODEL"></typeparam>
+    /// <typeparam name="ORM"></typeparam>
+    public class DataStore<MODEL, ORM, DTO> : IDataStore<MODEL> where MODEL : IRequiredProperties where ORM : class, IRequiredProperties
     {
-        private readonly ILogger<FruitDataStore> logger;
+        private readonly ILogger<DataStore<MODEL, ORM, DTO>> logger;
         private readonly ApplicationDbContext context;
-        private readonly IDataMapping<FruitModel, FruitORM, FruitDTO> dataMapper;
+        private readonly IDataMapping<MODEL, ORM, DTO> dataMapper;
 
-        public FruitDataStore(ILogger<FruitDataStore> logger, ApplicationDbContext context, IDataMapping<FruitModel, FruitORM, FruitDTO> dataMapper)
+        public DataStore(ILogger<DataStore<MODEL, ORM, DTO>> logger, ApplicationDbContext context, IDataMapping<MODEL, ORM, DTO> dataMapper)
         {
             this.logger = logger;
             this.context = context;
@@ -27,12 +29,12 @@ namespace POC.DataLayer.Data.Store
         }
 
         /// <summary>
-        /// Get the list of entities
+        /// Get a list of all entities
         /// </summary>
         /// <returns>The list with found entities or empty list if no entities were found</returns>
-        public async IAsyncEnumerable<FruitModel> GetEntityListAsync()
+        public async IAsyncEnumerable<MODEL> GetEntityListAsync()
         {
-            var entities = context.Fruits.AsAsyncEnumerable();
+            var entities = context.Set<ORM>().AsAsyncEnumerable();
 
             await foreach (var entity in entities)
             {
@@ -41,42 +43,42 @@ namespace POC.DataLayer.Data.Store
         }
 
         /// <summary>
-        /// Get the entity by id
+        /// Get an entity by id
         /// </summary>
         /// <param name="id">Must be higher than zero</param>
         /// <returns>The entity if found, else null</returns>
-        public async Task<FruitModel> GetEntityAsync(long id)
+        public async Task<MODEL> GetEntityAsync(long id)
         {
             if (id <= 0)
             {
-                return null;
+                return default;
             }
 
-            var entity = await context.Fruits.FindAsync(id);
+            var entity = await context.Set<ORM>().FindAsync(id);
 
             if (entity == null)
             {
-                return null;
+                return default;
             }
 
             return dataMapper.ORMToModel(entity);
         }
 
         /// <summary>
-        /// Creates new entity from the corresponding model
+        /// Creates new data store entry for mapped ORM from provided MODEL
         /// </summary>
-        /// <param name="model">model.Id must be equal to zero</param>
-        /// <returns>The new entity if it was created, else null</returns>
-        public async Task<FruitModel> CreateEntityAsync(FruitModel model)
+        /// <param name="model">model must contain Id and be equal to zero</param>
+        /// <returns>The new data store entry mapped to MODEL if it was successfully created, else null</returns>
+        public async Task<MODEL> CreateEntityAsync(MODEL model)
         {
             if (model == null || model.Id != 0)
             {
-                return null;
+                return default;
             }
 
             var entity = dataMapper.ModelToORM(model);
 
-            context.Fruits.Add(entity);
+            context.Set<ORM>().Add(entity);
 
             try
             {
@@ -89,33 +91,33 @@ namespace POC.DataLayer.Data.Store
             {
                 logger.LogWarning("Failed to create entity, reverting context: " + error.Message);
 
-                context.Fruits.Remove(entity);
+                context.Set<ORM>().Remove(entity);
 
-                return null;
+                return default;
             }
 
             return dataMapper.ORMToModel(entity);
         }
 
         /// <summary>
-        /// Updates the entity with the provided model
+        /// Updates existing data store entry with mapped ORM from provided MODEL
         /// </summary>
-        /// <param name="model">model.Id must be higher than zero</param>
-        /// <returns>The updated entity model if it was updated, else null</returns>
-        public async Task<FruitModel> UpdateEntityAsync(FruitModel model)
+        /// <param name="model">model must contain ID and must be higher than zero</param>
+        /// <returns>The updated data store entry mapped to MODEL if it was successfully updated, else null</returns>
+        public async Task<MODEL> UpdateEntityAsync(MODEL model)
         {
             if (model == null || model.Id <= 0)
             {
-                return null;
+                return default;
             }
 
             var update = dataMapper.ModelToORM(model);
 
-            var entity = await context.Fruits.FindAsync(update.Id);
+            var entity = await context.Set<ORM>().FindAsync(update.Id);
 
             if (entity == null)
             {
-                return null;
+                return default;
             }
 
             var prevEntity = dataMapper.CopyORM(entity);
@@ -140,32 +142,32 @@ namespace POC.DataLayer.Data.Store
                         entry.CurrentValues.SetValues(entry.OriginalValues);
                     });
 
-                return null;
+                return default;
             }
 
             return dataMapper.ORMToModel(entity);
         }
 
         /// <summary>
-        /// Deletes the entity matching the provided id
+        /// Deletes the data store entry matching the provided id
         /// </summary>
         /// <param name="id">Must be higher than zero</param>
-        /// <returns>The deleted entity model if it was deleted, else null</returns>
-        public async Task<FruitModel> DeleteEntityAsync(long id)
+        /// <returns>The deleted data store entry mapped to MODEL if it was successfully deleted, else null</returns>
+        public async Task<MODEL> DeleteEntityAsync(long id)
         {
             if (id <= 0)
             {
-                return null;
+                return default;
             }
 
-            var entity = await context.Fruits.FindAsync(id);
+            var entity = await context.Set<ORM>().FindAsync(id);
 
             if (entity == null)
             {
-                return null;
+                return default;
             }
 
-            context.Fruits.Remove(entity);
+            context.Set<ORM>().Remove(entity);
 
             try
             {
@@ -178,9 +180,9 @@ namespace POC.DataLayer.Data.Store
             {
                 logger.LogWarning("Failed to remove entity, reverting context: " + error.Message);
 
-                context.Fruits.Add(entity);
+                context.Set<ORM>().Add(entity);
 
-                return null;
+                return default;
             }
 
             return dataMapper.ORMToModel(entity);

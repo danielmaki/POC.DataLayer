@@ -35,7 +35,7 @@ namespace POC.DataLayer.Data.Test.Store
             };
 
             // Execute
-            var result = await fixture.service.CreateEntityAsync(model);
+            var result = await fixture.dataStore.CreateEntityAsync(model);
 
             // Verify
             Assert.NotEqual(model.Id, result.Id);
@@ -58,7 +58,7 @@ namespace POC.DataLayer.Data.Test.Store
             };
 
             // Execute
-            var result = await fixture.service.CreateEntityAsync(model);
+            var result = await fixture.dataStore.CreateEntityAsync(model);
 
             // Verify
             Assert.NotEqual(model.Id, result.Id);
@@ -83,7 +83,7 @@ namespace POC.DataLayer.Data.Test.Store
             };
 
             // Execute
-            var result = await fixture.service.CreateEntityAsync(model);
+            var result = await fixture.dataStore.CreateEntityAsync(model);
 
             // Verify
             Assert.Null(result);
@@ -104,7 +104,7 @@ namespace POC.DataLayer.Data.Test.Store
             };
 
             // Execute
-            var result = await fixture.service.CreateEntityAsync(model);
+            var result = await fixture.dataStore.CreateEntityAsync(model);
 
             // Verify
             Assert.Null(result);
@@ -114,7 +114,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test1_CreateEntityAsync_Case5_NullEntity()
         {
             // Execute
-            var result = await fixture.service.CreateEntityAsync(null);
+            var result = await fixture.dataStore.CreateEntityAsync(null);
 
             // Verify
             Assert.Null(result);
@@ -134,7 +134,7 @@ namespace POC.DataLayer.Data.Test.Store
             };
 
             // Execute
-            var result = await fixture.service.CreateEntityAsync(model);
+            var result = await fixture.dataStore.CreateEntityAsync(model);
 
             // Verify
             Assert.NotEqual(model.Id, result.Id);
@@ -148,7 +148,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case1_ValidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = fixture.service.GetEntityListAsync();
+            var result = fixture.dataStore.GetEntityListAsync();
             var models = new List<FruitModel>();
             await foreach (var model in result)
             {
@@ -164,7 +164,7 @@ namespace POC.DataLayer.Data.Test.Store
             foreach (var model in models)
             {
                 // Execute
-                var updatedResult = await fixture.service.UpdateEntityAsync(model);
+                var updatedResult = await fixture.dataStore.UpdateEntityAsync(model);
 
                 // Verify
                 Assert.Equal(model.Id, updatedResult.Id);
@@ -181,7 +181,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case2_InvalidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = fixture.service.GetEntityListAsync();
+            var result = fixture.dataStore.GetEntityListAsync();
             var models = new List<Tuple<FruitModel, FruitModel>>();
             await foreach (var model in result)
             {
@@ -204,12 +204,12 @@ namespace POC.DataLayer.Data.Test.Store
             foreach (var model in models)
             {
                 // Execute
-                var updatedResult = await fixture.service.UpdateEntityAsync(model.Item2);
+                var updatedResult = await fixture.dataStore.UpdateEntityAsync(model.Item2);
 
                 // Verify
                 Assert.Null(updatedResult);
 
-                updatedResult = await fixture.service.GetEntityAsync(model.Item2.Id);
+                updatedResult = await fixture.dataStore.GetEntityAsync(model.Item2.Id);
 
                 Assert.Equal(model.Item1.Id, updatedResult.Id);
                 Assert.Equal(model.Item1.Name, updatedResult.Name);
@@ -225,7 +225,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case3_InvalidId(long id)
         {
             // Setup
-            var result = fixture.service.GetEntityListAsync();
+            var result = fixture.dataStore.GetEntityListAsync();
             var models = new List<Tuple<FruitModel, FruitModel>>();
             await foreach (var model in result)
             {
@@ -240,7 +240,7 @@ namespace POC.DataLayer.Data.Test.Store
             foreach (var model in models)
             {
                 // Execute
-                var updatedResult = await fixture.service.UpdateEntityAsync(model.Item2);
+                var updatedResult = await fixture.dataStore.UpdateEntityAsync(model.Item2);
 
                 // Verify
                 Assert.Null(updatedResult);
@@ -251,7 +251,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case4_NullEntity()
         {
             // Execute
-            var result = await fixture.service.UpdateEntityAsync(null);
+            var result = await fixture.dataStore.UpdateEntityAsync(null);
 
             // Verify
             Assert.Null(result);
@@ -262,7 +262,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case5_ValidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = fixture.service.GetEntityListAsync();
+            var result = fixture.dataStore.GetEntityListAsync();
             var models = new List<FruitModel>();
             await foreach (var model in result)
             {
@@ -278,7 +278,7 @@ namespace POC.DataLayer.Data.Test.Store
             foreach (var model in models)
             {
                 // Execute
-                var updatedResult = await fixture.service.UpdateEntityAsync(model);
+                var updatedResult = await fixture.dataStore.UpdateEntityAsync(model);
 
                 // Verify
                 Assert.Equal(model.Id, updatedResult.Id);
@@ -292,7 +292,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test3_DeleteEntityAsync_Case1_ValidId()
         {
             // Execute
-            var result = fixture.service.GetEntityListAsync();
+            var result = fixture.dataStore.GetEntityListAsync();
             var models = new List<FruitModel>();
             await foreach (var model in result)
             {
@@ -303,7 +303,7 @@ namespace POC.DataLayer.Data.Test.Store
 
             foreach (var model in models)
             {
-                var deletedResult = await fixture.service.DeleteEntityAsync(model.Id);
+                var deletedResult = await fixture.dataStore.DeleteEntityAsync(model.Id);
 
                 // Verify
                 Assert.Equal(model.Id, deletedResult.Id);
@@ -312,7 +312,7 @@ namespace POC.DataLayer.Data.Test.Store
                 Assert.Equal(model.Taste, deletedResult.Taste);
             }
 
-            result = fixture.service.GetEntityListAsync();
+            result = fixture.dataStore.GetEntityListAsync();
 
             await foreach (var model in result)
             {
@@ -327,7 +327,7 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test3_DeleteEntityAsync_Case2_InvalidId(long id)
         {
             // Execute
-            var result = await fixture.service.DeleteEntityAsync(id);
+            var result = await fixture.dataStore.DeleteEntityAsync(id);
 
             // Verify
             Assert.Null(result);

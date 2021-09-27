@@ -4,6 +4,7 @@
     {
         Unknown = 0,
         Sweet = 1,
-        Sour = 2
+        Sour = 2,
+        Bitter = 3
     }
 }
