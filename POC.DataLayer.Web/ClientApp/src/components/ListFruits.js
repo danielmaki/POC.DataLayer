@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 
-export class ListFruit extends Component {
-  static displayName = ListFruit.name;
+export class ListFruits extends Component {
+  static displayName = ListFruits.name;
 
   constructor(props) {
     super(props);
-    this.state = { fruits: [], loading: true };
+    this.state = { Fruits: [], Loading: true };
   }
 
   componentDidMount() {
-    this.populateTable();
+    this.PopulateTable();
   }
 
-  static renderFruitTable(fruits) {
+  static RenderFruitTable(fruits) {
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
@@ -38,22 +38,21 @@ export class ListFruit extends Component {
   }
 
   render() {
-    let contents = this.state.loading
+    let contents = this.state.Loading
       ? <p><em>Loading...</em></p>
-      : ListFruit.renderFruitTable(this.state.fruits);
+      : ListFruits.RenderFruitTable(this.state.Fruits);
 
     return (
       <div>
         <h1 id="tabelLabel" >Fruit List</h1>
-        <p>This component demonstrates fetching data from the server.</p>
         {contents}
       </div>
     );
   }
 
-  async populateTable() {
-    const response = await fetch('fruit');
+  async PopulateTable() {
+    const response = await fetch('fruit/GetList');
     const data = await response.json();
-    this.setState({ fruits: data, loading: false });
+    this.setState({ Fruits: data, Loading: false });
   }
 }

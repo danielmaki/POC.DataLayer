@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 
-export class AddFruit extends Component {
+export class ChangeFruit extends Component {
     constructor(props) {
         super(props);
 
         this.state = { Id: 0, Name: "Unknown", Taste: "Unknown", Color: "Unknown" };
+        this.HandleIdChange = this.HandleIdChange.bind(this);
         this.HandleNameChange = this.HandleNameChange.bind(this);
         this.HandleTasteChange = this.HandleTasteChange.bind(this);
         this.HandleColorChange = this.HandleColorChange.bind(this);
         this.HandleSubmit = this.HandleSubmit.bind(this);
+    }
+
+    HandleIdChange(event) {
+        this.setState({ Id: event.target.value });
     }
 
     HandleNameChange(event) {
@@ -27,12 +32,12 @@ export class AddFruit extends Component {
         event.preventDefault();
 
         const requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state)
         };
 
-        fetch('fruit/Create', requestOptions)
+        fetch('fruit/Update', requestOptions)
             .then(response => console.log('Submitted successfully', response))
             .catch(error => console.log('Form submit error', error))
     }
@@ -40,6 +45,8 @@ export class AddFruit extends Component {
     render() {
         return (
             <form onSubmit={this.HandleSubmit}>
+                <label>Id: <input type="number" value={this.state.Id} onChange={this.HandleIdChange} /></label>
+                <br />
                 <label>Name: <input type="text" value={this.state.Name} onChange={this.HandleNameChange} /></label>
                 <br />
                 <label>Taste: <select value={this.state.Taste} onChange={this.HandleTasteChange}>

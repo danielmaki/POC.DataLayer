@@ -12,7 +12,7 @@ using POC.DataLayer.Data.Store;
 namespace POC.DataLayer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class FruitController : ControllerBase
     {
         private readonly ILogger<FruitController> logger;
@@ -28,41 +28,86 @@ namespace POC.DataLayer.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FruitDTO>> Get()
+        public async IAsyncEnumerable<FruitDTO> GetList()
         {
             logger.LogTrace($"Get fruits");
 
-            var result = await fruitDataStore.GetEntityListAsync();
+            var entities = fruitDataStore.GetEntityListAsync();
 
-            var fruits = new List<FruitDTO>();
-
-            foreach (var fruit in result)
+            await foreach (var fruit in entities)
             {
-                fruits.Add(dataMapper.ModelToDTO(fruit));
+                yield return dataMapper.ModelToDTO(fruit);
             }
+        }
 
-            return fruits;
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
+        {
+            logger.LogTrace($"Get fruit with id {id}");
+
+            var result = await fruitDataStore.GetEntityAsync(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(dataMapper.ModelToDTO(result));
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([Bind("id, name, color, taste")] FruitDTO fruit)
         {
-            logger.LogTrace($"Create fruit: {fruit.Name}");
+            logger.LogTrace($"Create fruit {fruit.Name}");
 
-            if (ModelState.IsValid)
+            var model = dataMapper.DTOToModel(fruit);
+            var result = await fruitDataStore.CreateEntityAsync(model);
+
+            if (result == null)
             {
-                var model = dataMapper.DTOToModel(fruit);
-                var result = await fruitDataStore.CreateEntityAsync(model);
-
-                if (result == null)
-                    return NotFound();
+                return NotFound();
             }
             else
             {
-                return BadRequest();
+                return Ok(dataMapper.ModelToDTO(result));
             }
+        }
 
-            return Ok();
+        [HttpPut]
+        public async Task<IActionResult> Update([Bind("id, name, color, taste")] FruitDTO fruit)
+        {
+            logger.LogTrace($"Update fruit {fruit.Name} with id {fruit.Id}");
+
+            var model = dataMapper.DTOToModel(fruit);
+            var result = await fruitDataStore.UpdateEntityAsync(model);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(dataMapper.ModelToDTO(result));
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            logger.LogTrace($"delete fruit with id {id}");
+
+            var result = await fruitDataStore.DeleteEntityAsync(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(dataMapper.ModelToDTO(result));
+            }
         }
     }
 }

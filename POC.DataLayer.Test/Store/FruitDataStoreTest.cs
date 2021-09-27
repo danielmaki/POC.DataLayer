@@ -4,9 +4,12 @@ using Xunit;
 
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Enums;
+using System.Collections.Generic;
+using System;
 
 namespace POC.DataLayer.Data.Test.Store
 {
+    [TestCaseOrderer("POC.DataLayer.Data.Test.AlphabeticalOrderer", "POC.DataLayer.Data.Test")]
     public class FruitDataStoreTest : IDataStoreFixture
     {
         public readonly DbContextFixture fixture;
@@ -145,16 +148,21 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case1_ValidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = await fixture.service.GetEntityListAsync();
-
-            Assert.NotEmpty(result);
-
-            foreach (var model in result)
+            var result = fixture.service.GetEntityListAsync();
+            var models = new List<FruitModel>();
+            await foreach (var model in result)
             {
                 model.Name = name;
                 model.Color = color;
                 model.Taste = taste;
 
+                models.Add(model);
+            }
+
+            Assert.NotEmpty(models);
+
+            foreach (var model in models)
+            {
                 // Execute
                 var updatedResult = await fixture.service.UpdateEntityAsync(model);
 
@@ -173,11 +181,9 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case2_InvalidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = await fixture.service.GetEntityListAsync();
-
-            Assert.NotEmpty(result);
-
-            foreach (var model in result)
+            var result = fixture.service.GetEntityListAsync();
+            var models = new List<Tuple<FruitModel, FruitModel>>();
+            await foreach (var model in result)
             {
                 var prevModel = new FruitModel()
                 {
@@ -190,18 +196,25 @@ namespace POC.DataLayer.Data.Test.Store
                 model.Color = color;
                 model.Taste = taste;
 
+                models.Add(new Tuple<FruitModel, FruitModel>(prevModel, model));
+            }
+
+            Assert.NotEmpty(models);
+
+            foreach (var model in models)
+            {
                 // Execute
-                var updatedResult = await fixture.service.UpdateEntityAsync(model);
+                var updatedResult = await fixture.service.UpdateEntityAsync(model.Item2);
 
                 // Verify
                 Assert.Null(updatedResult);
 
-                updatedResult = await fixture.service.GetEntityAsync(model.Id);
+                updatedResult = await fixture.service.GetEntityAsync(model.Item2.Id);
 
-                Assert.Equal(prevModel.Id, updatedResult.Id);
-                Assert.Equal(prevModel.Name, updatedResult.Name);
-                Assert.Equal(prevModel.Color, updatedResult.Color);
-                Assert.Equal(prevModel.Taste, updatedResult.Taste);
+                Assert.Equal(model.Item1.Id, updatedResult.Id);
+                Assert.Equal(model.Item1.Name, updatedResult.Name);
+                Assert.Equal(model.Item1.Color, updatedResult.Color);
+                Assert.Equal(model.Item1.Taste, updatedResult.Taste);
             }
         }
 
@@ -211,27 +224,26 @@ namespace POC.DataLayer.Data.Test.Store
         [InlineData(99999)]
         public async Task Test2_UpdateEntityAsync_Case3_InvalidId(long id)
         {
-            // Execute
-            var result = await fixture.service.GetEntityListAsync();
-
-            Assert.NotEmpty(result);
-
-            foreach (var model in result)
+            // Setup
+            var result = fixture.service.GetEntityListAsync();
+            var models = new List<Tuple<FruitModel, FruitModel>>();
+            await foreach (var model in result)
             {
                 var prevModel = model;
                 model.Id = id;
 
-                var updatedResult = await fixture.service.UpdateEntityAsync(model);
+                models.Add(new Tuple<FruitModel, FruitModel>(prevModel, model));
+            }
+
+            Assert.NotEmpty(models);
+
+            foreach (var model in models)
+            {
+                // Execute
+                var updatedResult = await fixture.service.UpdateEntityAsync(model.Item2);
 
                 // Verify
                 Assert.Null(updatedResult);
-
-                updatedResult = await fixture.service.GetEntityAsync(model.Id);
-
-                Assert.Equal(prevModel.Id, updatedResult.Id);
-                Assert.Equal(prevModel.Name, updatedResult.Name);
-                Assert.Equal(prevModel.Color, updatedResult.Color);
-                Assert.Equal(prevModel.Taste, updatedResult.Taste);
             }
         }
 
@@ -250,16 +262,21 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test2_UpdateEntityAsync_Case5_ValidModel(string name, string color, Taste taste)
         {
             // Setup
-            var result = await fixture.service.GetEntityListAsync();
-
-            Assert.NotEmpty(result);
-
-            foreach (var model in result)
+            var result = fixture.service.GetEntityListAsync();
+            var models = new List<FruitModel>();
+            await foreach (var model in result)
             {
                 model.Name = name;
                 model.Color = color;
                 model.Taste = taste;
 
+                models.Add(model);
+            }
+
+            Assert.NotEmpty(models);
+
+            foreach (var model in models)
+            {
                 // Execute
                 var updatedResult = await fixture.service.UpdateEntityAsync(model);
 
@@ -275,24 +292,32 @@ namespace POC.DataLayer.Data.Test.Store
         public async Task Test3_DeleteEntityAsync_Case1_ValidId()
         {
             // Execute
-            var result = await fixture.service.GetEntityListAsync();
-
-            Assert.NotEmpty(result);
-
-            foreach (var fruit in result)
+            var result = fixture.service.GetEntityListAsync();
+            var models = new List<FruitModel>();
+            await foreach (var model in result)
             {
-                var deletedResult = await fixture.service.DeleteEntityAsync(fruit.Id);
-
-                // Verify
-                Assert.Equal(fruit.Id, deletedResult.Id);
-                Assert.Equal(fruit.Name, deletedResult.Name);
-                Assert.Equal(fruit.Color, deletedResult.Color);
-                Assert.Equal(fruit.Taste, deletedResult.Taste);
+                models.Add(model);
             }
 
-            result = await fixture.service.GetEntityListAsync();
+            Assert.NotEmpty(models);
 
-            Assert.Empty(result);
+            foreach (var model in models)
+            {
+                var deletedResult = await fixture.service.DeleteEntityAsync(model.Id);
+
+                // Verify
+                Assert.Equal(model.Id, deletedResult.Id);
+                Assert.Equal(model.Name, deletedResult.Name);
+                Assert.Equal(model.Color, deletedResult.Color);
+                Assert.Equal(model.Taste, deletedResult.Taste);
+            }
+
+            result = fixture.service.GetEntityListAsync();
+
+            await foreach (var model in result)
+            {
+                Assert.Null(model);
+            }
         }
 
         [Theory]

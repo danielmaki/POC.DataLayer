@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -29,17 +30,14 @@ namespace POC.DataLayer.Data.Store
         /// Get the list of entities
         /// </summary>
         /// <returns>The list with found entities or empty list if no entities were found</returns>
-        public async Task<IEnumerable<FruitModel>> GetEntityListAsync()
+        public async IAsyncEnumerable<FruitModel> GetEntityListAsync()
         {
-            var entities = await context.Fruits.ToListAsync();
-            var models = new List<FruitModel>();
+            var entities = context.Fruits.AsAsyncEnumerable();
 
-            foreach (var entity in entities)
+            await foreach (var entity in entities)
             {
-                models.Add(dataMapper.ORMToModel(entity));
+                yield return dataMapper.ORMToModel(entity);
             }
-
-            return models;
         }
 
         /// <summary>
@@ -100,7 +98,7 @@ namespace POC.DataLayer.Data.Store
         }
 
         /// <summary>
-        /// Updates the entity with the corresponding model
+        /// Updates the entity with the provided model
         /// </summary>
         /// <param name="model">model.Id must be higher than zero</param>
         /// <returns>The updated entity model if it was updated, else null</returns>
@@ -135,7 +133,12 @@ namespace POC.DataLayer.Data.Store
             {
                 logger.LogWarning("Failed to update entity, reverting context: " + error.Message);
 
-                dataMapper.UpdateORM(entity, prevEntity);
+                // Revert update
+                context.ChangeTracker.Entries()
+                    .Where(x => x.State == EntityState.Modified).ToList().ForEach(entry => {
+                        entry.State = EntityState.Unchanged;
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                    });
 
                 return null;
             }
