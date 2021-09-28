@@ -3,16 +3,16 @@ using System.Threading.Tasks;
 
 namespace POC.DataLayer.Data.Store
 {
-    public interface IDataStore<MODEL>
+    public interface IDataStore<INTERNAL> where INTERNAL : IRequiredProperties
     {
-        public IAsyncEnumerable<MODEL> GetEntityListAsync();
+        public IAsyncEnumerable<INTERNAL> GetEntityListAsync();
 
-        public Task<MODEL> GetEntityAsync(long id);
+        public Task<INTERNAL> GetEntityAsync(long id);
 
-        public Task<MODEL> CreateEntityAsync(MODEL model);
+        public Task<INTERNAL> CreateEntityAsync(INTERNAL intl);
 
-        public Task<MODEL> UpdateEntityAsync(MODEL model);
+        public Task<INTERNAL> UpdateEntityAsync(INTERNAL intl);
 
-        public Task<MODEL> DeleteEntityAsync(long id);
+        public Task<INTERNAL> DeleteEntityAsync(long id);
     }
 }

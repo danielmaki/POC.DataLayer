@@ -13,15 +13,15 @@ namespace POC.DataLayer.Data.Store
     /// <summary>
     /// A generic class for CRUD operations to/from Entity Framework data store
     /// </summary>
-    /// <typeparam name="MODEL"></typeparam>
-    /// <typeparam name="ORM"></typeparam>
-    public class DataStore<MODEL, ORM, DTO> : IDataStore<MODEL> where MODEL : IRequiredProperties where ORM : class, IRequiredProperties
+    /// <typeparam name="INTERNAL"></typeparam>
+    /// <typeparam name="EXTERNAL"></typeparam>
+    public class DataStore<INTERNAL, EXTERNAL> : IDataStore<INTERNAL> where INTERNAL : IRequiredProperties where EXTERNAL : class, IRequiredProperties
     {
-        private readonly ILogger<DataStore<MODEL, ORM, DTO>> logger;
+        private readonly ILogger<DataStore<INTERNAL, EXTERNAL>> logger;
         private readonly ApplicationDbContext context;
-        private readonly IDataMapping<MODEL, ORM, DTO> dataMapper;
+        private readonly IDataMap<INTERNAL, EXTERNAL> dataMapper;
 
-        public DataStore(ILogger<DataStore<MODEL, ORM, DTO>> logger, ApplicationDbContext context, IDataMapping<MODEL, ORM, DTO> dataMapper)
+        public DataStore(ILogger<DataStore<INTERNAL, EXTERNAL>> logger, ApplicationDbContext context, IDataMap<INTERNAL, EXTERNAL> dataMapper)
         {
             this.logger = logger;
             this.context = context;
@@ -32,13 +32,13 @@ namespace POC.DataLayer.Data.Store
         /// Get a list of all entities
         /// </summary>
         /// <returns>The list with found entities or empty list if no entities were found</returns>
-        public async IAsyncEnumerable<MODEL> GetEntityListAsync()
+        public async IAsyncEnumerable<INTERNAL> GetEntityListAsync()
         {
-            var entities = context.Set<ORM>().AsAsyncEnumerable();
+            var entities = context.Set<EXTERNAL>().AsAsyncEnumerable();
 
             await foreach (var entity in entities)
             {
-                yield return dataMapper.ORMToModel(entity);
+                yield return dataMapper.ExtToIntl(entity);
             }
         }
 
@@ -47,38 +47,38 @@ namespace POC.DataLayer.Data.Store
         /// </summary>
         /// <param name="id">Must be higher than zero</param>
         /// <returns>The entity if found, else null</returns>
-        public async Task<MODEL> GetEntityAsync(long id)
+        public async Task<INTERNAL> GetEntityAsync(long id)
         {
             if (id <= 0)
             {
                 return default;
             }
 
-            var entity = await context.Set<ORM>().FindAsync(id);
+            var entity = await context.Set<EXTERNAL>().FindAsync(id);
 
             if (entity == null)
             {
                 return default;
             }
 
-            return dataMapper.ORMToModel(entity);
+            return dataMapper.ExtToIntl(entity);
         }
 
         /// <summary>
-        /// Creates new data store entry for mapped ORM from provided MODEL
+        /// Creates new data store entry for mapped EXTERNAL model from provided INTERNAL model
         /// </summary>
-        /// <param name="model">model must contain Id and be equal to zero</param>
-        /// <returns>The new data store entry mapped to MODEL if it was successfully created, else null</returns>
-        public async Task<MODEL> CreateEntityAsync(MODEL model)
+        /// <param name="intl">INTERNAL model must contain Id and be equal to zero</param>
+        /// <returns>The new data store entry mapped to INTERNAL if it was successfully created, else null</returns>
+        public async Task<INTERNAL> CreateEntityAsync(INTERNAL intl)
         {
-            if (model == null || model.Id != 0)
+            if (intl == null || intl.Id != 0)
             {
                 return default;
             }
 
-            var entity = dataMapper.ModelToORM(model);
+            var entity = dataMapper.IntlToExt(intl);
 
-            context.Set<ORM>().Add(entity);
+            context.Set<EXTERNAL>().Add(entity);
 
             try
             {
@@ -91,38 +91,38 @@ namespace POC.DataLayer.Data.Store
             {
                 logger.LogWarning("Failed to create entity, reverting context: " + error.Message);
 
-                context.Set<ORM>().Remove(entity);
+                context.Set<EXTERNAL>().Remove(entity);
 
                 return default;
             }
 
-            return dataMapper.ORMToModel(entity);
+            return dataMapper.ExtToIntl(entity);
         }
 
         /// <summary>
-        /// Updates existing data store entry with mapped ORM from provided MODEL
+        /// Updates existing data store entry with mapped EXTERNAL model from provided INTERNAL model
         /// </summary>
-        /// <param name="model">model must contain ID and must be higher than zero</param>
-        /// <returns>The updated data store entry mapped to MODEL if it was successfully updated, else null</returns>
-        public async Task<MODEL> UpdateEntityAsync(MODEL model)
+        /// <param name="intl">INTERNAL model must contain Id property and must be higher than zero</param>
+        /// <returns>The updated data store entry mapped to INTERNAL if it was successfully updated, else null</returns>
+        public async Task<INTERNAL> UpdateEntityAsync(INTERNAL intl)
         {
-            if (model == null || model.Id <= 0)
+            if (intl == null || intl.Id <= 0)
             {
                 return default;
             }
 
-            var update = dataMapper.ModelToORM(model);
+            var update = dataMapper.IntlToExt(intl);
 
-            var entity = await context.Set<ORM>().FindAsync(update.Id);
+            var entity = await context.Set<EXTERNAL>().FindAsync(update.Id);
 
             if (entity == null)
             {
                 return default;
             }
 
-            var prevEntity = dataMapper.CopyORM(entity);
+            var prevEntity = dataMapper.CopyExt(entity);
 
-            dataMapper.UpdateORM(entity, update);
+            dataMapper.UpdateExt(entity, update);
 
             try
             {
@@ -145,29 +145,29 @@ namespace POC.DataLayer.Data.Store
                 return default;
             }
 
-            return dataMapper.ORMToModel(entity);
+            return dataMapper.ExtToIntl(entity);
         }
 
         /// <summary>
         /// Deletes the data store entry matching the provided id
         /// </summary>
         /// <param name="id">Must be higher than zero</param>
-        /// <returns>The deleted data store entry mapped to MODEL if it was successfully deleted, else null</returns>
-        public async Task<MODEL> DeleteEntityAsync(long id)
+        /// <returns>The deleted data store entry mapped to INTERNAL if it was successfully deleted, else null</returns>
+        public async Task<INTERNAL> DeleteEntityAsync(long id)
         {
             if (id <= 0)
             {
                 return default;
             }
 
-            var entity = await context.Set<ORM>().FindAsync(id);
+            var entity = await context.Set<EXTERNAL>().FindAsync(id);
 
             if (entity == null)
             {
                 return default;
             }
 
-            context.Set<ORM>().Remove(entity);
+            context.Set<EXTERNAL>().Remove(entity);
 
             try
             {
@@ -180,12 +180,12 @@ namespace POC.DataLayer.Data.Store
             {
                 logger.LogWarning("Failed to remove entity, reverting context: " + error.Message);
 
-                context.Set<ORM>().Add(entity);
+                context.Set<EXTERNAL>().Add(entity);
 
                 return default;
             }
 
-            return dataMapper.ORMToModel(entity);
+            return dataMapper.ExtToIntl(entity);
         }
     }
 }

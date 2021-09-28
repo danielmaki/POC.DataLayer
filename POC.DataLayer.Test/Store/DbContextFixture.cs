@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 using POC.DataLayer.Data.Context;
-//using POC.DataLayer.Data.Mappings;
 using POC.DataLayer.Data.Store;
 
 namespace POC.DataLayer.Data.Test.Store
@@ -34,10 +33,10 @@ namespace POC.DataLayer.Data.Test.Store
             context = new ApplicationDbContext(options);
             context.Database.Migrate();
 
-            var logger = new Mock<ILogger<DataStore<FruitModel, FruitORM, FruitDTO>>>(MockBehavior.Loose);
-            var dataMapper = new FruitMapping();
+            var logger = new Mock<ILogger<DataStore<FruitModel, FruitORM>>>(MockBehavior.Loose);
+            var dataMapper = new FruitBackFacingMap();
 
-            dataStore = new DataStore<FruitModel, FruitORM, FruitDTO>(logger.Object, context, dataMapper);
+            dataStore = new DataStore<FruitModel, FruitORM>(logger.Object, context, dataMapper);
         }
 
         public void Dispose()

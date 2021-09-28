@@ -11,6 +11,8 @@ namespace POC.DataLayer.Data
     public interface IRequiredProperties
     {
         public long Id { get; set; }
+
+        //IEnumerable<object> GetProperties();
     }
 
     public class FruitDTO : IRequiredProperties
@@ -59,69 +61,89 @@ namespace POC.DataLayer.Data
         }
     }
 
-    public class FruitMapping : DataMapping<FruitModel, FruitORM, FruitDTO>
+    public class FruitBackFacingMap : DataMap<FruitModel, FruitORM>
     {
-        public override FruitORM CopyORM(FruitORM orm)
+        public override FruitORM CopyExt(FruitORM ext)
         {
             return new FruitORM()
             {
                 Id = 0,
-                Name = orm.Name,
-                Color = orm.Color,
-                Taste = orm.Taste
+                Name = ext.Name,
+                Color = ext.Color,
+                Taste = ext.Taste
             };
         }
 
-        public override FruitModel DTOToModel(FruitDTO dto)
+        public override FruitModel ExtToIntl(FruitORM ext)
         {
             return new FruitModel()
             {
-                Id = dto.Id,
-                Name = dto.Name,
-                Color = dto.Color,
-                Taste = (Taste)Enum.Parse(typeof(Taste), dto.Taste)
+                Id = ext.Id,
+                Name = ext.Name,
+                Color = ext.Color,
+                Taste = (Taste)ext.Taste
             };
         }
 
-        public override FruitDTO ModelToDTO(FruitModel model)
-        {
-            return new FruitDTO()
-            {
-                Id = model.Id,
-                Name = model.Name,
-                Color = model.Color,
-                Taste = model.Taste.ToString()
-            };
-        }
-
-        public override FruitORM ModelToORM(FruitModel model)
+        public override FruitORM IntlToExt(FruitModel intl)
         {
             return new FruitORM()
             {
-                Id = model.Id,
-                Name = model.Name,
-                Color = model.Color,
-                Taste = (int)model.Taste
+                Id = intl.Id,
+                Name = intl.Name,
+                Color = intl.Color,
+                Taste = (int)intl.Taste
             };
         }
 
-        public override FruitModel ORMToModel(FruitORM orm)
+        public override void UpdateExt(FruitORM ext, FruitORM update)
+        {
+            ext.Name = update.Name;
+            ext.Color = update.Color;
+            ext.Taste = update.Taste;
+        }
+    }
+
+    public class FruitFrontFacingMap : DataMap<FruitModel, FruitDTO>
+    {
+        public override FruitDTO CopyExt(FruitDTO ext)
+        {
+            return new FruitDTO()
+            {
+                Id = 0,
+                Name = ext.Name,
+                Color = ext.Color,
+                Taste = ext.Taste
+            };
+        }
+
+        public override FruitModel ExtToIntl(FruitDTO ext)
         {
             return new FruitModel()
             {
-                Id = orm.Id,
-                Name = orm.Name,
-                Color = orm.Color,
-                Taste = (Taste)orm.Taste
+                Id = ext.Id,
+                Name = ext.Name,
+                Color = ext.Color,
+                Taste = (Taste)Enum.Parse(typeof(Taste), ext.Taste)
             };
         }
 
-        public override void UpdateORM(FruitORM entity, FruitORM update)
+        public override FruitDTO IntlToExt(FruitModel intl)
         {
-            // Note: Do not include Id
-            entity.Name = update.Name;
-            entity.Color = update.Color;
-            entity.Taste = update.Taste;
+            return new FruitDTO()
+            {
+                Id = intl.Id,
+                Name = intl.Name,
+                Color = intl.Color,
+                Taste = intl.Taste.ToString()
+            };
+        }
+
+        public override void UpdateExt(FruitDTO ext, FruitDTO update)
+        {
+            ext.Name = update.Name;
+            ext.Color = update.Color;
+            ext.Taste = update.Taste;
         }
     }
 }

@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using POC.DataLayer.Data.Configurations;
-using POC.DataLayer.Data.ORM;
-
 namespace POC.DataLayer.Data.Context
 {
     public class ApplicationDbContext : DbContext

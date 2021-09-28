@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Xunit;
 
-using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Enums;
-using System.Collections.Generic;
-using System;
 
 namespace POC.DataLayer.Data.Test.Store
 {
