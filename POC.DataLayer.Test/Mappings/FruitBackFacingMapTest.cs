@@ -3,47 +3,14 @@ using System;
 using Xunit;
 
 using POC.DataLayer.Data.Enums;
+using POC.DataLayer.Data.Mappings.BackFacing;
+using POC.DataLayer.Data.Models;
+using POC.DataLayer.Data.Test.Mappings.Abstractions;
 
 namespace POC.DataLayer.Data.Test.Mappings
 {
     public class FruitBackFacingMapTest : IBackFacingMapTest
     {
-        [Theory]
-        [InlineData(1, "Apple", "Red", 1)]
-        [InlineData(2, "Lime", "Green", 2)]
-        [InlineData(3, "Unknown", "Unknown", 0)]
-        public void CopyExt(long id, string name, string color, int tasteExt)
-        {
-            // Setup
-            var mapping = new FruitBackFacingMap();
-            var ext = new FruitORM()
-            {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = tasteExt
-            };
-
-            // Execute
-            var result = mapping.CopyExt(ext);
-
-            // Verify
-            Assert.Equal(0, result.Id);
-            Assert.Equal(name, result.Name);
-            Assert.Equal(color, result.Color);
-            Assert.Equal(tasteExt, result.Taste);
-        }
-
-        [Fact]
-        public void CopyExt_Null()
-        {
-            // Setup
-            var mapping = new FruitBackFacingMap();
-
-            // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.CopyExt(null));
-        }
-
         [Theory]
         [InlineData(1, "Apple", "Red", Taste.Sweet, 1)]
         [InlineData(2, "Lime", "Green", Taste.Sour, 2)]
@@ -52,11 +19,11 @@ namespace POC.DataLayer.Data.Test.Mappings
         [InlineData(0, null, "Black", Taste.Unknown, 0)]
         [InlineData(0, null, null, Taste.Unknown, 0)]
         [InlineData(0, null, null, null, null)]
-        public void IntlToExt(long id, string name, string color, Taste tasteIntl, int tasteExt)
+        public void ToExternal(long id, string name, string color, Taste tasteIntl, int tasteExt)
         {
             // Setup
             var mapping = new FruitBackFacingMap();
-            var intl = new FruitModel()
+            var intl = new Fruit()
             {
                 Id = id,
                 Name = name,
@@ -65,7 +32,7 @@ namespace POC.DataLayer.Data.Test.Mappings
             };
 
             // Execute
-            var result = mapping.IntlToExt(intl);
+            var result = mapping.ToExternal(intl);
 
             // Verify
             Assert.Equal(id, result.Id);
@@ -75,13 +42,13 @@ namespace POC.DataLayer.Data.Test.Mappings
         }
 
         [Fact]
-        public void IntlToExt_Null()
+        public void ToExternal_Null()
         {
             // Setup
             var mapping = new FruitBackFacingMap();
 
             // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.IntlToExt(null));
+            Assert.Throws<NullReferenceException>(() => mapping.ToExternal(null));
         }
 
         [Theory]
@@ -92,11 +59,11 @@ namespace POC.DataLayer.Data.Test.Mappings
         [InlineData(0, null, "Black", Taste.Unknown, 0)]
         [InlineData(0, null, null, Taste.Unknown, 0)]
         [InlineData(0, null, null, null, null)]
-        public void ExtToIntl(long id, string name, string color, Taste tasteIntl, int tasteExt)
+        public void ToModel(long id, string name, string color, Taste tasteIntl, int tasteExt)
         {
             // Setup
             var mapping = new FruitBackFacingMap();
-            var ext = new FruitORM()
+            var ext = new FruitEntity()
             {
                 Id = id,
                 Name = name,
@@ -105,7 +72,7 @@ namespace POC.DataLayer.Data.Test.Mappings
             };
 
             // Execute
-            var result = mapping.ExtToIntl(ext);
+            var result = mapping.ToModel(ext);
 
             // Verify
             Assert.Equal(id, result.Id);
@@ -115,31 +82,31 @@ namespace POC.DataLayer.Data.Test.Mappings
         }
 
         [Fact]
-        public void ExtToIntl_Null()
+        public void ToModel_Null()
         {
             // Setup
             var mapping = new FruitBackFacingMap();
 
             // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.ExtToIntl(null));
+            Assert.Throws<NullReferenceException>(() => mapping.ToModel(null));
         }
 
         [Theory]
         [InlineData(1, "Apple", "Red", 1)]
         [InlineData(2, "Lime", "Green", 2)]
         [InlineData(3, "Unknown", "Unknown", 0)]
-        public void UpdateExt(long id, string name, string color, int taste)
+        public void UpdateExternal(long id, string name, string color, int taste)
         {
             // Setup
             var mapping = new FruitBackFacingMap();
-            var ext = new FruitORM()
+            var ext = new FruitEntity()
             {
                 Id = id,
                 Name = name,
                 Color = color,
                 Taste = taste
             };
-            var update = new FruitORM()
+            var update = new FruitEntity()
             {
                 Id = 0,
                 Name = name,
@@ -148,7 +115,7 @@ namespace POC.DataLayer.Data.Test.Mappings
             };
 
             // Execute
-            mapping.UpdateExt(ext, update);
+            mapping.UpdateExternal(ext, update);
 
             // Verify
             Assert.Equal(id, ext.Id);
@@ -158,16 +125,16 @@ namespace POC.DataLayer.Data.Test.Mappings
         }
 
         [Fact]
-        public void UpdateExt_Null()
+        public void UpdateExternal_Null()
         {
             // Setup
             var mapping = new FruitBackFacingMap();
-            var ext = new FruitORM();
+            var ext = new FruitEntity();
 
             // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExt(ext, null));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExt(null, ext));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExt(null, null));
+            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(ext, null));
+            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, ext));
+            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, null));
         }
     }
 }

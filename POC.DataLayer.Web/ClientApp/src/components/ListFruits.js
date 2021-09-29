@@ -51,7 +51,7 @@ export class ListFruits extends Component {
   }
 
   async PopulateTable() {
-    const response = await fetch('fruit/GetList');
+    const response = await fetch('fruit/GetAll');
     const data = await response.json();
     this.setState({ Fruits: data, Loading: false });
   }

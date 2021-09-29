@@ -7,14 +7,17 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 using POC.DataLayer.Data.Context;
+using POC.DataLayer.Data.Mappings.BackFacing;
+using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Store;
+using POC.DataLayer.Data.Store.Abstractions;
 
-namespace POC.DataLayer.Data.Test.Store
+namespace POC.DataLayer.Data.Test.Store.Abstractions
 {
     public class DbContextFixture : IDisposable
     {
         public ApplicationDbContext context { get; private set; }
-        public IDataStore<FruitModel> dataStore { get; private set; }
+        public IDataStore<Fruit> dataStore { get; private set; }
 
         public DbContextFixture()
         {
@@ -33,10 +36,10 @@ namespace POC.DataLayer.Data.Test.Store
             context = new ApplicationDbContext(options);
             context.Database.Migrate();
 
-            var logger = new Mock<ILogger<DataStore<FruitModel, FruitORM>>>(MockBehavior.Loose);
+            var logger = new Mock<ILogger<FruitDataStore>>(MockBehavior.Loose);
             var dataMapper = new FruitBackFacingMap();
 
-            dataStore = new DataStore<FruitModel, FruitORM>(logger.Object, context, dataMapper);
+            dataStore = new FruitDataStore(logger.Object, context, dataMapper);
         }
 
         public void Dispose()

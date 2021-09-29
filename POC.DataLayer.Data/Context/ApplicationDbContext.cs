@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using POC.DataLayer.Data.Models;
+
 namespace POC.DataLayer.Data.Context
 {
     public class ApplicationDbContext : DbContext
@@ -27,7 +29,7 @@ namespace POC.DataLayer.Data.Context
         #region Properties
 
         /// <summary>Fruit description</summary>
-        public DbSet<FruitORM> Fruits { get; set; }
+        public DbSet<FruitEntity> Fruits { get; set; }
 
         #endregion
 
