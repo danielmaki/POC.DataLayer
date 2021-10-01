@@ -220,7 +220,7 @@ namespace POC.DataLayer.Data.Store.Abstractions
         }
 
         /// <summary>
-        /// Reverts changes to context
+        /// Reverts changes in context
         /// </summary>
         /// <param name="revertState">The state of each ENTITY in context to be reverted</param>
         protected void revertChanges(EntityState revertState)

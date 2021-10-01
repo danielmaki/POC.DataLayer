@@ -17,10 +17,10 @@ namespace POC.DataLayer.Data.Hosting
         public static IServiceCollection AddDataServices(this IServiceCollection self, IConfiguration configuration)
         {
             // Fruit data
-            //self.AddTransient<FruitConfiguration>();
             self.AddSingleton<IDataMap<Fruit, FruitEntity>, FruitBackFacingMap>();
-            self.AddSingleton<IDataMap<Fruit, FruitDto>, FruitFrontFacingMap>();
             self.AddScoped<IDataStore<Fruit>, FruitDataStore>();
+
+            self.AddSingleton<IDataMap<Fruit, FruitDto>, FruitFrontFacingMap>();
 
             self.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

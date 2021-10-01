@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 
-using POC.DataLayer.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using POC.DataLayer.Data.Context.Abstractions;
 
 namespace POC.DataLayer.Data.Context
 {
-    public class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
         #region Constructors
 
@@ -26,20 +27,18 @@ namespace POC.DataLayer.Data.Context
 
         #endregion
 
-        #region Properties
-
-        /// <summary>Fruit description</summary>
-        public DbSet<FruitEntity> Fruits { get; set; }
-
-        #endregion
-
         #region Overrides
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new FruitConfiguration());
+            // Find each ENTITY configuration property and invoke the ApplyConfig method for applying the ENTITY configuration to the model builder
+            var properties = GetType().GetProperties();
+            foreach (var config in properties.Where(property => typeof(IDbContextEntityConfig).IsAssignableFrom(property.PropertyType)))
+            {
+                ((IDbContextEntityConfig)config.GetValue(this)).ApplyConfig(modelBuilder);
+            }
         }
 
         #endregion

@@ -18,7 +18,7 @@ namespace POC.DataLayer.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("POC.DataLayer.Data.ORM.FruitORM", b =>
+            modelBuilder.Entity("POC.DataLayer.Data.Models.FruitEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

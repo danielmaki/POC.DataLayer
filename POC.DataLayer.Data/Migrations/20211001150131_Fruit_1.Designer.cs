@@ -9,7 +9,7 @@ using POC.DataLayer.Data.Context;
 namespace POC.DataLayer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210923185502_Fruit_1")]
+    [Migration("20211001150131_Fruit_1")]
     partial class Fruit_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace POC.DataLayer.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("POC.DataLayer.Data.ORM.FruitORM", b =>
+            modelBuilder.Entity("POC.DataLayer.Data.Models.FruitEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

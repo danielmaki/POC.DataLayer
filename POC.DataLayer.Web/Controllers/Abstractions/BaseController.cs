@@ -65,7 +65,7 @@ namespace POC.DataLayer.Web.Controllers.Abstractions
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> Create([Bind("id, name, color, taste")] DTO dto)
+        public virtual async Task<IActionResult> Create(DTO dto)
         {
             logger.LogTrace($"Create {typeName}");
 
@@ -88,7 +88,7 @@ namespace POC.DataLayer.Web.Controllers.Abstractions
         }
 
         [HttpPut]
-        public virtual async Task<IActionResult> Update([Bind("id, name, color, taste")] DTO dto)
+        public virtual async Task<IActionResult> Update(DTO dto)
         {
             logger.LogTrace($"Update {typeName}");
 
