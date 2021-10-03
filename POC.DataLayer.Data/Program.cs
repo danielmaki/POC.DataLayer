@@ -2,6 +2,9 @@ using Microsoft.Extensions.Hosting;
 
 using POC.DataLayer.Data.Hosting;
 
+/// <summary>
+/// Create host builder for creating and applying data migrations using EF Core migration tools
+/// </summary>
 namespace POC.DataLayer.Data
 {
     public class Program

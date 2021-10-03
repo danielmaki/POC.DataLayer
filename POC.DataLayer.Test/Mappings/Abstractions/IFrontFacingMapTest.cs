@@ -1,6 +1,6 @@
 ﻿using POC.DataLayer.Data.Enums;
 
-namespace POC.DataLayer.Data.Test.Mappings.Abstractions
+namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
 {
     public interface IFrontFacingMapTest
     {

@@ -46,6 +46,8 @@ export class AddFruit extends Component {
                         <option value="Unknown">Unknown</option>
                         <option value="Sweet">Sweet</option>
                         <option value="Sour">Sour</option>
+                        <option value="Bitter">Bitter</option>
+                        <option value="No Taste">No Taste</option>
                     </select>
                 </label>
                 <br />

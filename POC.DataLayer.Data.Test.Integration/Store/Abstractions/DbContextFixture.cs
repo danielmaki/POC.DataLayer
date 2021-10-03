@@ -5,13 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Moq;
+
 using POC.DataLayer.Data.Context;
 using POC.DataLayer.Data.Mappings.BackFacing;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Store;
 using POC.DataLayer.Data.Store.Abstractions;
 
-namespace POC.DataLayer.Data.Test.Store.Abstractions
+namespace POC.DataLayer.Data.Test.Integration.Store.Abstractions
 {
     public class DbContextFixture : IDisposable
     {

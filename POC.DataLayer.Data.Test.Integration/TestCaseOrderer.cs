@@ -4,7 +4,7 @@ using System.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace POC.DataLayer.Data.Test
+namespace POC.DataLayer.Data.Test.Integration
 {
     public class AlphabeticalOrderer : ITestCaseOrderer
     {

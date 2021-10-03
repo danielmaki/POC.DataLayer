@@ -5,9 +5,9 @@ using Xunit;
 using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.BackFacing;
 using POC.DataLayer.Data.Models;
-using POC.DataLayer.Data.Test.Mappings.Abstractions;
+using POC.DataLayer.Data.Test.Unit.Mappings.Abstractions;
 
-namespace POC.DataLayer.Data.Test.Mappings
+namespace POC.DataLayer.Data.Test.Unit.Mappings
 {
     public class FruitBackFacingMapTest : IBackFacingMapTest
     {

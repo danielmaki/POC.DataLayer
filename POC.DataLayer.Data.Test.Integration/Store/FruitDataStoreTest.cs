@@ -6,11 +6,11 @@ using Xunit;
 
 using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Models;
-using POC.DataLayer.Data.Test.Store.Abstractions;
+using POC.DataLayer.Data.Test.Integration.Store.Abstractions;
 
-namespace POC.DataLayer.Data.Test.Store
+namespace POC.DataLayer.Data.Test.Integration.Store
 {
-    [TestCaseOrderer("POC.DataLayer.Data.Test.AlphabeticalOrderer", "POC.DataLayer.Data.Test")]
+    [TestCaseOrderer("POC.DataLayer.Data.Test.Integration.AlphabeticalOrderer", "POC.DataLayer.Data.Test.Integration")]
     public class FruitDataStoreTest : IDataStoreFixture
     {
         public readonly DbContextFixture fixture;
@@ -286,6 +286,29 @@ namespace POC.DataLayer.Data.Test.Store
                 Assert.Equal(name, updatedResult.Name);
                 Assert.Equal(color, updatedResult.Color);
                 Assert.Equal(taste, updatedResult.Taste);
+            }
+        }
+
+        [Fact]
+        public async Task Test2_UpdateAsync_Case6_NoChange()
+        {
+            // Setup
+            var result = fixture.dataStore.GetAllAsync();
+            var models = new List<Fruit>();
+            await foreach (var model in result)
+            {
+                models.Add(model);
+            }
+
+            Assert.NotEmpty(models);
+
+            foreach (var model in models)
+            {
+                // Execute
+                var updatedResult = await fixture.dataStore.UpdateAsync(model);
+
+                // Verify
+                Assert.Null(updatedResult);
             }
         }
 
