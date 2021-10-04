@@ -6,10 +6,12 @@ using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.BackFacing;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Test.Unit.Mappings.Abstractions;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace POC.DataLayer.Data.Test.Unit.Mappings
 {
-    public class FruitBackFacingMapTest : IBackFacingMapTest
+    public class FruitEntityMapTest : IEntityMapTest
     {
         [Theory]
         [InlineData(1, "Apple", "Red", Taste.Sweet, 1)]
@@ -22,7 +24,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToExternal(long id, string name, string color, Taste tasteIntl, int tasteExt)
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
+            var mapping = new FruitEntityMap();
             var intl = new Fruit()
             {
                 Id = id,
@@ -45,7 +47,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToExternal_Null()
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
+            var mapping = new FruitEntityMap();
 
             // Verify
             Assert.Throws<NullReferenceException>(() => mapping.ToExternal(null));
@@ -62,7 +64,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToModel(long id, string name, string color, Taste tasteIntl, int tasteExt)
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
+            var mapping = new FruitEntityMap();
             var ext = new FruitEntity()
             {
                 Id = id,
@@ -85,7 +87,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToModel_Null()
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
+            var mapping = new FruitEntityMap();
 
             // Verify
             Assert.Throws<NullReferenceException>(() => mapping.ToModel(null));
@@ -98,7 +100,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void UpdateExternal(long id, string name, string color, int taste)
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
+            var mapping = new FruitEntityMap();
             var ext = new FruitEntity()
             {
                 Id = id,
@@ -124,17 +126,39 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
             Assert.Equal(taste, update.Taste);
         }
 
-        [Fact]
-        public void UpdateExternal_Null()
+        [Theory]
+        [ClassData(typeof(EntityUpdateTestData))]
+        public void UpdateExternal_Null(FruitEntity ext, FruitEntity update)
         {
             // Setup
-            var mapping = new FruitBackFacingMap();
-            var ext = new FruitEntity();
+            var mapping = new FruitEntityMap();
 
             // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(ext, null));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, ext));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, null));
+            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(ext, update));
         }
+    }
+
+    public class EntityUpdateTestData : IEnumerable<object[]>
+    {
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            yield return new object[]
+            {
+                new FruitEntity(),
+                null
+            };
+            yield return new object[]
+            {
+                null,
+                new FruitEntity()
+            };
+            yield return new object[]
+            {
+                null,
+                null
+            };
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -1,4 +1,7 @@
-﻿using POC.DataLayer.Data.Models.Abstractions;
+﻿using System;
+using System.Linq;
+
+using POC.DataLayer.Data.Models.Abstractions;
 
 namespace POC.DataLayer.Data.Mappings.Abstractions
 {
@@ -28,6 +31,17 @@ namespace POC.DataLayer.Data.Mappings.Abstractions
         /// </summary>
         /// <param name="ext">all properties but ext.Id will be updated</param>
         /// <param name="update"></param>
-        public abstract void UpdateExternal(EXTERNAL ext, EXTERNAL update);
+        public void UpdateExternal(EXTERNAL ext, EXTERNAL update)
+        {
+            if (ext == null || update == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            foreach (var property in ext.GetType().GetProperties().Where(x => x.Name != "Id"))
+            {
+                property.SetValue(ext, property.GetValue(update));
+            }
+        }
     }
 }

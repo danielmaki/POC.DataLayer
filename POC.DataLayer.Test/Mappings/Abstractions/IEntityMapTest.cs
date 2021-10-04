@@ -1,8 +1,9 @@
 ﻿using POC.DataLayer.Data.Enums;
+using POC.DataLayer.Data.Models;
 
 namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
 {
-    public interface IBackFacingMapTest
+    public interface IEntityMapTest
     {
         public void ToExternal(long id, string name, string color, Taste tasteIntl, int tasteExt);
 
@@ -14,6 +15,6 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
 
         public void UpdateExternal(long id, string name, string color, int taste);
 
-        public void UpdateExternal_Null();
+        public void UpdateExternal_Null(FruitEntity ext, FruitEntity update);
     }
 }

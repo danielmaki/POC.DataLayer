@@ -9,7 +9,7 @@ using POC.DataLayer.Data.Test.Unit.Mappings.Abstractions;
 
 namespace POC.DataLayer.Data.Test.Unit.Mappings
 {
-    public class FruitFrontFacingMapTest : IFrontFacingMapTest
+    public class FruitDtoMapTest : IDtoMapTest
     {
         [Theory]
         [InlineData(1, "Apple", "Red", Taste.Sweet, "Sweet")]
@@ -22,7 +22,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToModel(long id, string name, string color, Taste tasteIntl, string tasteExt)
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
             var ext = new FruitDto()
             {
                 Id = id,
@@ -45,7 +45,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToModel_Null()
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
 
             // Verify
             Assert.Throws<NullReferenceException>(() => mapping.ToModel(null));
@@ -62,7 +62,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToExternal(long id, string name, string color, Taste tasteIntl, string tasteExt)
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
             var intl = new Fruit()
             {
                 Id = id,
@@ -85,7 +85,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void ToExternal_Null()
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
 
             // Verify
             Assert.Throws<NullReferenceException>(() => mapping.ToExternal(null));
@@ -98,7 +98,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void UpdateExternal(long id, string name, string color, string taste)
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
             var ext = new FruitDto()
             {
                 Id = id,
@@ -128,7 +128,7 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         public void UpdateExternal_Null()
         {
             // Setup
-            var mapping = new FruitFrontFacingMap();
+            var mapping = new FruitDtoMap();
             var ext = new FruitDto();
 
             // Verify

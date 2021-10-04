@@ -2,7 +2,7 @@
 
 namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
 {
-    public interface IFrontFacingMapTest
+    public interface IDtoMapTest
     {
         public void ToExternal(long id, string name, string color, Taste tasteIntl, string tasteExt);
 

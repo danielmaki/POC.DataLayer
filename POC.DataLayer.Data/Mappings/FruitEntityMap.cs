@@ -4,7 +4,7 @@ using POC.DataLayer.Data.Models;
 
 namespace POC.DataLayer.Data.Mappings.BackFacing
 {
-    public class FruitBackFacingMap : DataMap<Fruit, FruitEntity>
+    public class FruitEntityMap : DataMap<Fruit, FruitEntity>
     {
         public override Fruit ToModel(FruitEntity ext)
         {
@@ -26,13 +26,6 @@ namespace POC.DataLayer.Data.Mappings.BackFacing
                 Color = model.Color,
                 Taste = (int)model.Taste
             };
-        }
-
-        public override void UpdateExternal(FruitEntity ext, FruitEntity update)
-        {
-            ext.Name = update.Name;
-            ext.Color = update.Color;
-            ext.Taste = update.Taste;
         }
     }
 }
