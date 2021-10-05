@@ -10,7 +10,7 @@ using POC.DataLayer.Data.Store.Abstractions;
 
 namespace POC.DataLayer.Web.Controllers.Abstractions
 {
-    public abstract class BaseController<MODEL, DTO> : ControllerBase, IBaseController<DTO> where MODEL : IModel where DTO : IModel
+    public abstract class BaseController<MODEL, DTO> : ControllerBase, IBaseController<DTO> where MODEL : IModel where DTO : IDto
     {
         private readonly ILogger<BaseController<MODEL, DTO>> logger;
 

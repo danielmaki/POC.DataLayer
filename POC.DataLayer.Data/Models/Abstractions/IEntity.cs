@@ -1,7 +1,6 @@
 ﻿namespace POC.DataLayer.Data.Models.Abstractions
 {
-    public interface IModel
+    public interface IEntity : IExternal
     {
-        public long Id { get; set; }
     }
 }

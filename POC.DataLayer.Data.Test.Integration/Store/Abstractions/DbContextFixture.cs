@@ -37,7 +37,7 @@ namespace POC.DataLayer.Data.Test.Integration.Store.Abstractions
             context.Database.Migrate();
 
             var logger = new Mock<ILogger<FruitDataStore>>(MockBehavior.Loose);
-            var dataMapper = new FruitBackFacingMap();
+            var dataMapper = new FruitEntityMap();
 
             dataStore = new FruitDataStore(logger.Object, context, dataMapper);
         }

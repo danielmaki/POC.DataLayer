@@ -1,10 +1,12 @@
-﻿using POC.DataLayer.Data.Enums;
+﻿using System;
+
+using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.Abstractions;
 using POC.DataLayer.Data.Models;
 
-namespace POC.DataLayer.Data.Mappings.BackFacing
+namespace POC.DataLayer.Data.Mappings
 {
-    public class FruitBackFacingMap : DataMap<Fruit, FruitEntity>
+    public class FruitEntityMap : DataMap<Fruit, FruitEntity>
     {
         public override Fruit ToModel(FruitEntity ext)
         {
@@ -13,7 +15,7 @@ namespace POC.DataLayer.Data.Mappings.BackFacing
                 Id = ext.Id,
                 Name = ext.Name,
                 Color = ext.Color,
-                Taste = (Taste)ext.Taste
+                Taste = Enum.IsDefined(typeof(Taste), ext.Taste) ? (Taste)ext.Taste : Taste.Unknown
             };
         }
 
@@ -26,13 +28,6 @@ namespace POC.DataLayer.Data.Mappings.BackFacing
                 Color = model.Color,
                 Taste = (int)model.Taste
             };
-        }
-
-        public override void UpdateExternal(FruitEntity ext, FruitEntity update)
-        {
-            ext.Name = update.Name;
-            ext.Color = update.Color;
-            ext.Taste = update.Taste;
         }
     }
 }
