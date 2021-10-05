@@ -1,140 +1,33 @@
-using System;
-
 using Xunit;
 
-using POC.DataLayer.Data.Enums;
-using POC.DataLayer.Data.Mappings.FrontFacing;
+using POC.DataLayer.Data.Mappings;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Test.Unit.Mappings.Abstractions;
+using POC.DataLayer.Data.Test.Unit.Stub;
 
 namespace POC.DataLayer.Data.Test.Unit.Mappings
 {
-    public class FruitDtoMapTest : IDtoMapTest
+    public class FruitDtoMapTest : MappingTest<FruitDtoMap, Fruit, FruitDto>
     {
         [Theory]
-        [InlineData(1, "Apple", "Red", Taste.Sweet, "Sweet")]
-        [InlineData(2, "Lime", "Green", Taste.Sour, "Sour")]
-        [InlineData(3, "Unknown", "Unknown", Taste.Unknown, "Unknown")]
-        [InlineData(0, "Banana", "Yellow", Taste.Sweet, "Sweet")]
-        [InlineData(0, null, "Black", Taste.Unknown, "Unknown")]
-        [InlineData(0, null, null, Taste.Unknown, "Unknown")]
-        [InlineData(0, null, null, null, "Unknown")]
-        public void ToModel(long id, string name, string color, Taste tasteIntl, string tasteExt)
+        [ClassData(typeof(MapFruitToDtoTestData))]
+        public override void ToExternal(Fruit model, FruitDto dto)
         {
-            // Setup
-            var mapping = new FruitDtoMap();
-            var ext = new FruitDto()
-            {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = tasteExt
-            };
-
-            // Execute
-            var result = mapping.ToModel(ext);
-
-            // Verify
-            Assert.Equal(id, result.Id);
-            Assert.Equal(name, result.Name);
-            Assert.Equal(color, result.Color);
-            Assert.Equal(tasteIntl, result.Taste);
-        }
-
-        [Fact]
-        public void ToModel_Null()
-        {
-            // Setup
-            var mapping = new FruitDtoMap();
-
-            // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.ToModel(null));
+            base.ToExternal(model, dto);
         }
 
         [Theory]
-        [InlineData(1, "Apple", "Red", Taste.Sweet, "Sweet")]
-        [InlineData(2, "Lime", "Green", Taste.Sour, "Sour")]
-        [InlineData(3, "Unknown", "Unknown", Taste.Unknown, "Unknown")]
-        [InlineData(0, "Banana", "Yellow", Taste.Sweet, "Sweet")]
-        [InlineData(0, null, "Black", Taste.Unknown, "Unknown")]
-        [InlineData(0, null, null, Taste.Unknown, "Unknown")]
-        [InlineData(0, null, null, null, "Unknown")]
-        public void ToExternal(long id, string name, string color, Taste tasteIntl, string tasteExt)
+        [ClassData(typeof(MapDtoToFruitTestData))]
+        public override void ToModel(FruitDto dto, Fruit model)
         {
-            // Setup
-            var mapping = new FruitDtoMap();
-            var intl = new Fruit()
-            {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = tasteIntl
-            };
-
-            // Execute
-            var result = mapping.ToExternal(intl);
-
-            // Verify
-            Assert.Equal(id, result.Id);
-            Assert.Equal(name, result.Name);
-            Assert.Equal(color, result.Color);
-            Assert.Equal(tasteExt, result.Taste);
-        }
-
-        [Fact]
-        public void ToExternal_Null()
-        {
-            // Setup
-            var mapping = new FruitDtoMap();
-
-            // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.ToExternal(null));
+            base.ToModel(dto, model);
         }
 
         [Theory]
-        [InlineData(1, "Apple", "Red", "Sweet")]
-        [InlineData(2, "Lime", "Green", "Sour")]
-        [InlineData(3, "Unknown", "Unknown", "Unknown")]
-        public void UpdateExternal(long id, string name, string color, string taste)
+        [ClassData(typeof(UpdateFruitDtoTestData))]
+        public override void UpdateExternal(FruitDto init, FruitDto update, FruitDto expected)
         {
-            // Setup
-            var mapping = new FruitDtoMap();
-            var ext = new FruitDto()
-            {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = taste
-            };
-            var update = new FruitDto()
-            {
-                Id = 0,
-                Name = name,
-                Color = color,
-                Taste = taste
-            };
-
-            // Execute
-            mapping.UpdateExternal(ext, update);
-
-            // Verify
-            Assert.Equal(id, ext.Id);
-            Assert.Equal(name, update.Name);
-            Assert.Equal(color, update.Color);
-            Assert.Equal(taste, update.Taste);
-        }
-
-        [Fact]
-        public void UpdateExternal_Null()
-        {
-            // Setup
-            var mapping = new FruitDtoMap();
-            var ext = new FruitDto();
-
-            // Verify
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(ext, null));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, ext));
-            Assert.Throws<NullReferenceException>(() => mapping.UpdateExternal(null, null));
+            base.UpdateExternal(init, update, expected);
         }
     }
 }

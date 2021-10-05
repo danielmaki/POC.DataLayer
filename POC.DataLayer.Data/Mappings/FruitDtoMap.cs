@@ -4,7 +4,7 @@ using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.Abstractions;
 using POC.DataLayer.Data.Models;
 
-namespace POC.DataLayer.Data.Mappings.FrontFacing
+namespace POC.DataLayer.Data.Mappings
 {
     public class FruitDtoMap : DataMap<Fruit, FruitDto>
     {
@@ -15,7 +15,7 @@ namespace POC.DataLayer.Data.Mappings.FrontFacing
                 Id = ext.Id,
                 Name = ext.Name,
                 Color = ext.Color,
-                Taste = (Taste)Enum.Parse(typeof(Taste), ext.Taste)
+                Taste = Enum.TryParse<Taste>(ext.Taste, out var taste) ? taste : Taste.Unknown
             };
         }
 

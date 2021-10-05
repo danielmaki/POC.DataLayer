@@ -10,7 +10,7 @@ namespace POC.DataLayer.Data.Mappings.Abstractions
     /// </summary>
     /// <typeparam name="MODEL">The MODEL that is used within the solution</typeparam>
     /// <typeparam name="EXTERNAL">The EXTERNAL facing model e.g. DTO or EF model</typeparam>
-    public abstract class DataMap<MODEL, EXTERNAL> : IDataMap<MODEL, EXTERNAL> where MODEL : IModel where EXTERNAL : IModel, new()
+    public abstract class DataMap<MODEL, EXTERNAL> : IDataMap<MODEL, EXTERNAL> where MODEL : IModel where EXTERNAL : IExternal, new()
     {
         /// <summary>
         /// Maps an EXTERNAL model instance to a new MODEL instance

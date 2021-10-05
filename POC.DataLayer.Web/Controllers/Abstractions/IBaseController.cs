@@ -7,7 +7,7 @@ using POC.DataLayer.Data.Models.Abstractions;
 
 namespace POC.DataLayer.Web.Controllers.Abstractions
 {
-    public interface IBaseController<DTO> where DTO : IModel
+    public interface IBaseController<DTO> where DTO : IDto
     {
         public IAsyncEnumerable<DTO> GetAll();
 

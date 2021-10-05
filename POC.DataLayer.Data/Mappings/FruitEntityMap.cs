@@ -1,8 +1,10 @@
-﻿using POC.DataLayer.Data.Enums;
+﻿using System;
+
+using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.Abstractions;
 using POC.DataLayer.Data.Models;
 
-namespace POC.DataLayer.Data.Mappings.BackFacing
+namespace POC.DataLayer.Data.Mappings
 {
     public class FruitEntityMap : DataMap<Fruit, FruitEntity>
     {
@@ -13,7 +15,7 @@ namespace POC.DataLayer.Data.Mappings.BackFacing
                 Id = ext.Id,
                 Name = ext.Name,
                 Color = ext.Color,
-                Taste = (Taste)ext.Taste
+                Taste = Enum.IsDefined(typeof(Taste), ext.Taste) ? (Taste)ext.Taste : Taste.Unknown
             };
         }
 

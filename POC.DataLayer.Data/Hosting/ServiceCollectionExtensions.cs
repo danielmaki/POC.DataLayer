@@ -4,8 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using POC.DataLayer.Data.Context;
 using POC.DataLayer.Data.Mappings.Abstractions;
-using POC.DataLayer.Data.Mappings.BackFacing;
-using POC.DataLayer.Data.Mappings.FrontFacing;
+using POC.DataLayer.Data.Mappings;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Store;
 using POC.DataLayer.Data.Store.Abstractions;
