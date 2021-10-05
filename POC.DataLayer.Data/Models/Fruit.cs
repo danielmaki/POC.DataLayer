@@ -12,7 +12,7 @@ namespace POC.DataLayer.Data.Models
         public Taste Taste { get; set; }
     }
 
-    public class FruitDto : IModel
+    public class FruitDto : IDto
     {
         public long Id { get; set; }
 
@@ -21,7 +21,7 @@ namespace POC.DataLayer.Data.Models
         public string Taste { get; set; }
     }
 
-    public class FruitEntity : IModel
+    public class FruitEntity : IEntity
     {
         public long Id { get; set; }
 

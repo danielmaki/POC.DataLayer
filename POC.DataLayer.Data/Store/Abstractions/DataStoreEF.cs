@@ -15,7 +15,7 @@ namespace POC.DataLayer.Data.Store.Abstractions
     /// </summary>
     /// <typeparam name="MODEL">The internal model used within the solution</typeparam>
     /// <typeparam name="ENTITY">The back facing model representing the EF model</typeparam>
-    public abstract class DataStoreEF<MODEL, ENTITY, CONTEXT> : IDataStore<MODEL> where MODEL : IModel where ENTITY : class, IModel where CONTEXT : DbContext
+    public abstract class DataStoreEF<MODEL, ENTITY, CONTEXT> : IDataStore<MODEL> where MODEL : IModel where ENTITY : class, IEntity where CONTEXT : DbContext
     {
         private readonly ILogger<DataStoreEF<MODEL, ENTITY, CONTEXT>> logger;
 

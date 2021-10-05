@@ -4,9 +4,9 @@ using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Mappings.Abstractions;
 using POC.DataLayer.Data.Models;
 
-namespace POC.DataLayer.Data.Mappings.FrontFacing
+namespace POC.DataLayer.Data.Mappings
 {
-    public class FruitFrontFacingMap : DataMap<Fruit, FruitDto>
+    public class FruitDtoMap : DataMap<Fruit, FruitDto>
     {
         public override Fruit ToModel(FruitDto ext)
         {
@@ -15,7 +15,7 @@ namespace POC.DataLayer.Data.Mappings.FrontFacing
                 Id = ext.Id,
                 Name = ext.Name,
                 Color = ext.Color,
-                Taste = (Taste)Enum.Parse(typeof(Taste), ext.Taste)
+                Taste = Enum.TryParse<Taste>(ext.Taste, out var taste) ? taste : Taste.Unknown
             };
         }
 
@@ -28,13 +28,6 @@ namespace POC.DataLayer.Data.Mappings.FrontFacing
                 Color = model.Color,
                 Taste = model.Taste.ToString()
             };
-        }
-
-        public override void UpdateExternal(FruitDto ext, FruitDto update)
-        {
-            ext.Name = update.Name;
-            ext.Color = update.Color;
-            ext.Taste = update.Taste;
         }
     }
 }
