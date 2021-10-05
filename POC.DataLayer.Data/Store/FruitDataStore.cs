@@ -7,7 +7,7 @@ using POC.DataLayer.Data.Store.Abstractions;
 
 namespace POC.DataLayer.Data.Store
 {
-    public class FruitDataStore : DataStoreEF<Fruit, FruitEntity>
+    public class FruitDataStore : DataStoreEF<Fruit, FruitEntity, ApplicationDbContext>
     {
         private readonly ILogger<FruitDataStore> logger;
 
