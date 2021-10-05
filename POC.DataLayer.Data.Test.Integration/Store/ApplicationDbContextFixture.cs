@@ -3,7 +3,7 @@
 using Moq;
 
 using POC.DataLayer.Data.Context;
-using POC.DataLayer.Data.Mappings.BackFacing;
+using POC.DataLayer.Data.Mappings;
 using POC.DataLayer.Data.Models.Abstractions;
 using POC.DataLayer.Data.Store;
 using POC.DataLayer.Data.Store.Abstractions;
@@ -19,7 +19,7 @@ namespace POC.DataLayer.Data.Test.Integration.Store
         {
             // Fruit data store
             var logger = new Mock<ILogger<FruitDataStore>>(MockBehavior.Loose);
-            var dataMapper = new FruitBackFacingMap();
+            var dataMapper = new FruitEntityMap();
 
             fruitDataStore = new FruitDataStore(logger.Object, context, dataMapper);
         }
