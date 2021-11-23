@@ -158,7 +158,7 @@ namespace POC.DataLayer.Data.Store.Abstractions
             {
                 logger.LogWarning("Failed to update entity, reverting context: " + error.Message);
 
-                revertChanges(EntityState.Modified);
+                RevertChanges(EntityState.Modified);
 
                 return default;
             }
@@ -205,7 +205,7 @@ namespace POC.DataLayer.Data.Store.Abstractions
             {
                 logger.LogWarning("Failed to remove entity, reverting context: " + error.Message);
 
-                revertChanges(EntityState.Deleted);
+                RevertChanges(EntityState.Deleted);
 
                 return default;
             }
@@ -222,7 +222,7 @@ namespace POC.DataLayer.Data.Store.Abstractions
         /// Reverts changes in context
         /// </summary>
         /// <param name="revertState">The state of each ENTITY in context to be reverted</param>
-        protected void revertChanges(EntityState revertState)
+        protected void RevertChanges(EntityState revertState)
         {
             context.ChangeTracker.Entries()
                 .Where(x => x.State == revertState).ToList().ForEach(entry => {

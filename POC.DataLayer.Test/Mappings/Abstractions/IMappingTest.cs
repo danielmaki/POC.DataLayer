@@ -11,7 +11,8 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
         public abstract void ToModel(EXTERNAL ext, MODEL model);
 
         public void ToModel_Null();
-        public void UpdateExternal(EXTERNAL init, EXTERNAL update, EXTERNAL expected);
+
+        public void UpdateExternal();
 
         public void UpdateExternal_Null();
     }

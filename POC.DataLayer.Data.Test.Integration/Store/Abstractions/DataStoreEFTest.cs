@@ -9,12 +9,11 @@ using Xunit;
 using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Models.Abstractions;
-using POC.DataLayer.Data.Test.Integration.Store.Abstractions;
 
-namespace POC.DataLayer.Data.Test.Integration.Store
+namespace POC.DataLayer.Data.Test.Integration.Store.Abstractions
 {
     [TestCaseOrderer("POC.DataLayer.Data.Test.Integration.AlphabeticalOrderer", "POC.DataLayer.Data.Test.Integration")]
-    public abstract class DataStoreEFTest<FIXTURE, CONTEXT> : IDataStoreFixture<FIXTURE> where FIXTURE : DbContextFixture<CONTEXT> where CONTEXT : DbContext, new()
+    public abstract class DataStoreEFTest<FIXTURE, CONTEXT, MODEL> : IDataStoreFixture<FIXTURE, MODEL> where FIXTURE : DbContextFixture<CONTEXT> where CONTEXT : DbContext, new() where MODEL : IModel
     {
         public readonly FIXTURE fixture;
 
@@ -23,7 +22,17 @@ namespace POC.DataLayer.Data.Test.Integration.Store
             this.fixture = fixture;
         }
 
-        public abstract Task Test1_CreateAsync_Case1_ValidModel(long id, string name, string color, Taste taste);
+        public virtual async Task Test1_CreateAsync_Case1_ValidModel(MODEL inputModel, MODEL outputModel)
+        {
+            // Execute
+            var result = await fixture.dataStore.CreateAsync(inputModel);
+
+            // Verify
+            foreach (var property in result.GetType().GetProperties())
+            {
+                Assert.Equal(property.GetValue(outputModel), property.GetValue(result));
+            }
+        }
 
         public abstract Task Test1_CreateAsync_Case2_DefaultValues(long id, string name, string color, Taste taste);
 

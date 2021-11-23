@@ -7,39 +7,23 @@ using Xunit;
 using POC.DataLayer.Data.Context;
 using POC.DataLayer.Data.Enums;
 using POC.DataLayer.Data.Models;
+using POC.DataLayer.Data.Test.Integration.Store.Abstractions;
+using POC.DataLayer.Data.Test.Integration.Stub;
 
 namespace POC.DataLayer.Data.Test.Integration.Store
 {
     [TestCaseOrderer("POC.DataLayer.Data.Test.Integration.AlphabeticalOrderer", "POC.DataLayer.Data.Test.Integration")]
-    public class FruitDataStoreTest : DataStoreEFTest<ApplicationDbContextFixture, ApplicationDbContext>
+    public class FruitDataStoreTest : DataStoreEFTest<ApplicationDbContextFixture, ApplicationDbContext, Fruit>
     {
         public FruitDataStoreTest(ApplicationDbContextFixture fixture) : base(fixture)
         {
         }
 
         [Theory]
-        [InlineData(0, "Apple", "Red", Taste.Sweet)]
-        [InlineData(0, "Lime", "Green", Taste.Sour)]
-        [InlineData(0, "Unknown", "Unknown", Taste.Unknown)]
-        public override async Task Test1_CreateAsync_Case1_ValidModel(long id, string name, string color, Taste taste)
+        [ClassData(typeof(CreateValidFruitTestData))]
+        public override async Task Test1_CreateAsync_Case1_ValidModel(Fruit inputModel, Fruit outputModel)
         {
-            // Setup
-            var model = new Fruit()
-            {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = taste
-            };
-
-            // Execute
-            var result = await fixture.fruitDataStore.CreateAsync(model);
-
-            // Verify
-            Assert.NotEqual(model.Id, result.Id);
-            Assert.Equal(model.Name, result.Name);
-            Assert.Equal(model.Color, result.Color);
-            Assert.Equal(model.Taste, result.Taste);
+            await base.Test1_CreateAsync_Case1_ValidModel(inputModel, outputModel);
         }
 
         [Theory]
@@ -49,10 +33,10 @@ namespace POC.DataLayer.Data.Test.Integration.Store
             // Setup
             var model = new Fruit()
             {
-                Id = id,
-                Name = name,
-                Color = color,
-                Taste = taste
+                //Id = id,
+                Name = "",
+                //Color = color,
+                //Taste = taste
             };
 
             // Execute

@@ -61,19 +61,25 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings.Abstractions
             Assert.Throws<NullReferenceException>(() => mapping.ToModel(default));
         }
 
-        public virtual void UpdateExternal(EXTERNAL init, EXTERNAL update, EXTERNAL expected)
+        [Fact]
+        public virtual void UpdateExternal()
         {
             // Setup
             var mapping = new MAP();
+            var init = new EXTERNAL()
+            {
+                Id = 0
+            };
+            var update = new EXTERNAL()
+            {
+                Id = 1
+            };
 
             // Execute
             mapping.UpdateExternal(init, update);
 
             // Verify
-            foreach (var property in init.GetType().GetProperties())
-            {
-                Assert.Equal(property.GetValue(expected), property.GetValue(init));
-            }
+            Assert.NotEqual(init.Id, update.Id);
         }
 
         [Fact]

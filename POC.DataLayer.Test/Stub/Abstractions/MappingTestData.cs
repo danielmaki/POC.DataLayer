@@ -29,18 +29,4 @@ namespace POC.DataLayer.Data.Test.Unit.Stub.Abstractions
             AddRow(ext, model);
         }
     }
-
-    public class UpdateExternalData<EXTERNAL> : TheoryData where EXTERNAL : IExternal
-    {
-        /// <summary>
-        /// Adds data to the theory data set for updating an existing EXTERNAL model
-        /// </summary>
-        /// <param name="init">The initial external model</param>
-        /// <param name="update">The external model update</param>
-        /// <param name="expected">The expected external model</param>
-        public void Add(EXTERNAL init, EXTERNAL update, EXTERNAL expected)
-        {
-            AddRow(init, update, expected);
-        }
-    }
 }

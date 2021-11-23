@@ -22,12 +22,5 @@ namespace POC.DataLayer.Data.Test.Unit.Mappings
         {
             base.ToModel(entity, model);
         }
-
-        [Theory]
-        [ClassData(typeof(UpdateFruitEntityTestData))]
-        public override void UpdateExternal(FruitEntity init, FruitEntity update, FruitEntity expected)
-        {
-            base.UpdateExternal(init, update, expected);
-        }
     }
 }

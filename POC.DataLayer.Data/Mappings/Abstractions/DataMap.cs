@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-
 using POC.DataLayer.Data.Models.Abstractions;
 
 namespace POC.DataLayer.Data.Mappings.Abstractions

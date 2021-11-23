@@ -3,12 +3,13 @@
 using Xunit;
 
 using POC.DataLayer.Data.Enums;
+using POC.DataLayer.Data.Models.Abstractions;
 
 namespace POC.DataLayer.Data.Test.Integration.Store.Abstractions
 {
-    public interface IDataStoreFixture<FIXTURE> : IClassFixture<FIXTURE> where FIXTURE : class
+    public interface IDataStoreFixture<FIXTURE, MODEL> : IClassFixture<FIXTURE> where FIXTURE : class where MODEL : IModel
     {
-        public Task Test1_CreateAsync_Case1_ValidModel(long id, string name, string color, Taste taste);
+        public Task Test1_CreateAsync_Case1_ValidModel(MODEL inputModel, MODEL outputModel);
         public Task Test1_CreateAsync_Case2_DefaultValues(long id, string name, string color, Taste taste);
         public Task Test1_CreateAsync_Case3_InvalidModel(long id, string name, string color, Taste taste);
         public Task Test1_CreateAsync_Case4_InvalidId(long id, string name, string color, Taste taste);
