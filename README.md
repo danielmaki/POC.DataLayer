@@ -7,7 +7,7 @@
 - *Model:* the main model that is used internally throughout the solution
 - *DTO:* a model facing the front-end and only containing data visible to the outside
 *A data mapper allows for fluent translations between these three models.*
-*There is also a generic interface for easy testing of the data mdoels, mappings and CRUD operations using an in memory SQL database.*
+*There is also a generic interface for easy testing of the data models, mappings and CRUD operations using an in memory SQL database.*
 
 ## Before running the application follow the steps below:
 

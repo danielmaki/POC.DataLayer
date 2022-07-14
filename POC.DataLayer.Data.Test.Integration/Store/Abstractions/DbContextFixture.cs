@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 using POC.DataLayer.Data.Context;
-using POC.DataLayer.Data.Mappings.BackFacing;
+using POC.DataLayer.Data.Mappings;
 using POC.DataLayer.Data.Models;
 using POC.DataLayer.Data.Store;
 using POC.DataLayer.Data.Store.Abstractions;
